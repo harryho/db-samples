@@ -18,8 +18,7 @@ The sample databases in the project are customized. Some tables' and columns' na
 
 * Additional columns on some tables, e.g. email, mobile. 
 * All photo sample data has been removed, and additional photoPath is added for flexible implementation.
-* NorthwindCore is designed for EF Core
-* Every table in NorthwindCore contains column EntityId.  
+* NorthwindCore is designed for Entity Framework
 
 ### ER Diagram
 
@@ -28,9 +27,13 @@ The sample databases in the project are customized. Some tables' and columns' na
 
 #### Northwind 
 
+
 ![northwind_er_diagram](mysql/northwind_er_diagram.png)
 
 ####  NorthwindCore
+
+
+* Every table in NorthwindCore contains column EntityId.  
 
 ![northwindcore_er_diagram](mysql/northwindcore_er_diagram.png)
 
