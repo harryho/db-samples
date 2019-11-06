@@ -15,7 +15,6 @@ CREATE TABLE Category (
 
 CREATE TABLE Region (
   entityId INT AUTO_INCREMENT NOT NULL
- -- ,regionId INT NOT NULL
   ,regiondescription VARCHAR(50) NOT NULL
   ,PRIMARY KEY (entityId)
   ) ENGINE=INNODB;
@@ -32,13 +31,11 @@ CREATE TABLE Territory (
 
 CREATE TABLE CustomerDemographics (
   entityId INT AUTO_INCREMENT NOT NULL
---  customerTypeId VARCHAR(10) NOT NULL
   ,customerDesc TEXT NULL
   ,PRIMARY KEY (entityId)
   ) ENGINE=INNODB;
 
 CREATE TABLE Customer (
-  -- customerId VARCHAR(15) NOT NULL
    entityId INT AUTO_INCREMENT NOT NULL
   ,companyName VARCHAR(40) NOT NULL
   ,contactName VARCHAR(30) NULL
@@ -66,8 +63,6 @@ CREATE TABLE CustomerCustomerDemographics (
     ,FOREIGN KEY (customerTypeId)
       REFERENCES CustomerDemographics(entityId)
   ) ENGINE=INNODB;
-
-
 
 
 CREATE TABLE Employee (
@@ -101,8 +96,6 @@ CREATE TABLE EmployeeTerritory (
   ,PRIMARY KEY (entityId)
   ,FOREIGN KEY (employeeId)
       REFERENCES Employee(entityId)
-  -- ,FOREIGN KEY (territoryCode)
-  --     REFERENCES Territory(territoryCode)    
   ) ENGINE=INNODB;
 
 CREATE TABLE Supplier (
@@ -161,7 +154,7 @@ CREATE TABLE SalesOrder (
   ,orderDate DATETIME NULL
   ,requiredDate DATETIME NULL
   ,shippedDate DATETIME NULL
-  ,shipperid INT NOT NULL
+  ,shipperId INT NOT NULL
   ,freight DECIMAL(10, 2) NULL
   ,shipName VARCHAR(40) NULL
   ,shipAddress VARCHAR(60) NULL
@@ -170,7 +163,7 @@ CREATE TABLE SalesOrder (
   ,shipPostalCode VARCHAR(10) NULL
   ,shipCountry VARCHAR(15) NULL
   ,PRIMARY KEY (entityId)
-   , FOREIGN KEY (shipperid)
+   , FOREIGN KEY (shipperId)
       REFERENCES Shipper(entityId)
    ,FOREIGN KEY (customerId)
       REFERENCES Customer(entityId) 
