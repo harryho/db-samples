@@ -1,7 +1,7 @@
-Northwind sample database for other databases except MS Sql Server
+Northwind sample database for MySql, PostgresQL
 ====
 
-This project is inspired by [Microsoft Sample Databases](https://github.com/Microsoft/sql-server-samples), but it only targets other databases. 
+This project is inspired by [Microsoft Sample Databases](https://github.com/Microsoft/sql-server-samples), but it only targets other databases, such as MySql, PostgresQL, etc. 
 
 This folder contains scripts to create and load the Northwind sample databases.
 
@@ -44,14 +44,16 @@ The sample databases in the project are customized. Some tables' and columns' na
 #### MySql
 
 ```bash
-mysql -u user_id -p mytestdatabase < drupaldb-20090505.sql
+mysql -u user_id -p northwind < northwind.sql
 ```
 
 
 #### PostgresQL
 
+
 ```
-pg_restore 
+sudo su - postgres
+psql -d postgres -U postgres -f northwind.sql
 ```
 
 
