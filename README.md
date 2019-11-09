@@ -37,9 +37,27 @@ The sample databases in the project are customized. Some tables' and columns' na
 
 ![northwindcore_er_diagram](mysql/northwindcore_er_diagram.png)
 
+
+
+### Restore the database from SQL script
+
+#### MySql
+
+```bash
+mysql -u user_id -p mytestdatabase < drupaldb-20090505.sql
+```
+
+
+#### PostgresQL
+
+```
+pg_restore 
+```
+
+
+
 ### TODO
 
-* Add script for PostgresQL
 * Add script for MongoDB
 
 
