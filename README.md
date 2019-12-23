@@ -56,12 +56,43 @@ sudo su - postgres
 psql -d postgres -U postgres -f northwind.sql
 ```
 
+#### MongoDB
+
+* Firstly, install MongoDB community server, shell and tools
+* Launch the mongoDB server
+
+```
+sh mongo_import.sh
+
+echo "db.getCollectionNames()" > getColNames.js
+
+mongo mongodb://localhost/northwind < getColNames.js
+
+# You may see some output as follow:
+# .......
+# ......
+# MongoDB server version: x.x.x
+# [
+# 	"category",
+# 	"customer",
+# 	"employee",
+# 	"employeeTerritory",
+# 	"orderDetail",
+# 	"product",
+# 	"region",
+# 	"salesOrder",
+# 	"shipper",
+# 	"supplier",
+# 	"territory"
+# ]
+
+```
 
 
 ### TODO
 
-* Add script for MongoDB
-
+* ~~Add script for MongoDB~~
+* Add script for Sqlite
 
 
 
