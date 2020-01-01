@@ -88,11 +88,21 @@ mongo mongodb://localhost/northwind < getColNames.js
 
 ```
 
+#### Sqlite
+
+* Install [sqlite3](https://www.sqlite.org/)
+* Create northind db
+
+```
+cd db-samples/sqlite3
+sqlite3 northwind.db < northwind_core.sql
+```
 
 ### TODO
 
 * ~~Add script for MongoDB~~
-* Add script for Sqlite
+* ~~Add script for Sqlite~~
+
 
 
 
