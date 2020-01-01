@@ -1,4 +1,4 @@
-Northwind sample database for MySql, PostgresQL
+Northwind sample database for MySql, PostgresQL, and more
 ====
 
 This project is inspired by [Microsoft Sample Databases](https://github.com/Microsoft/sql-server-samples), but it only targets other databases, such as MySql, PostgresQL, etc. 
@@ -96,6 +96,8 @@ mongo mongodb://localhost/northwind < getColNames.js
 ```
 cd db-samples/sqlite3
 sqlite3 northwind.db < northwind_core.sql
+sqlite3 northwind.db
+>.tables
 ```
 
 ### TODO
