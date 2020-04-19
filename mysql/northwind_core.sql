@@ -91,10 +91,13 @@ CREATE TABLE Employee (
 CREATE TABLE EmployeeTerritory (
   entityId INT AUTO_INCREMENT NOT NULL,
   employeeId INT NOT NULL,
-  territoryCode VARCHAR(20) NOT NULL,
+  territoryId INT NOT NULL,
+  -- territoryCode VARCHAR(20) NOT NULL,
   PRIMARY KEY (entityId),
   FOREIGN KEY (employeeId)
       REFERENCES Employee(entityId)
+  FOREIGN KEY (territoryId)
+      REFERENCES Territory(entityId)
   ) ENGINE=INNODB;
 
 CREATE TABLE Supplier (
