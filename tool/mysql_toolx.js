@@ -8,14 +8,8 @@ const CWD = process.cwd();
 
 const NEWLINE = '\n';
 
-function processFile(inputFile) {
-  const instream = fs.createReadStream(inputFile),
-    outstream = new (require('stream'))(),
-    rl = readline.createInterface(instream, outstream);
-
-  let ct = 0;
-  const files = [];
-  let tmpTale = `
+const files = [];
+  const tmpTale = `
 DROP TEMPORARY TABLE IF EXISTS tmp_json_data;
 
 CREATE TEMPORARY TABLE tmp_json_data (
@@ -44,6 +38,14 @@ SELECT tableName, group_concat(jsonText) jtxt
 FROM tmp_json_data 
 GROUP BY tableName ) AS j
   `;
+
+function processFile(inputFile) {
+  const instream = fs.createReadStream(inputFile),
+    outstream = new (require('stream'))(),
+    rl = readline.createInterface(instream, outstream);
+
+  let ct = 0;
+  
   let tbl = '';
 
   var keyName = key => "'" + key + "',";

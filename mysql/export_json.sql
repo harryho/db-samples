@@ -234,10 +234,14 @@ json_object(
    
 SET SESSION  group_concat_max_len = 999096;
 
+
+-- Group the data in table tmp_json_data with table name
+-- Use group_concat to concat jsonText, which contains a row of data,
+-- into an array. And then wrap the array with square brackets 
 SELECT concat('"',j.tableName,'":[', j.jtxt, '],')
 INTO OUTFILE '/var/lib/mysql-files/json_data.json'
 FROM (
 SELECT tableName, group_concat(jsonText) jtxt
 FROM tmp_json_data 
 GROUP BY tableName ) AS j
-  
+

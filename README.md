@@ -62,6 +62,14 @@ psql -d postgres -U postgres -f northwind.sql
 * Launch the mongoDB server
 
 ```
+# Launch mongodb in Linux 
+systemctl start mongod
+
+```
+
+* Create the db northwind and import the data
+
+```
 sh mongo_import.sh
 
 echo "db.getCollectionNames()" > getColNames.js
@@ -99,6 +107,14 @@ sqlite3 northwind.db < northwind_core.sql
 sqlite3 northwind.db
 >.tables
 ```
+
+#### Json Flat file
+
+* Json flat file is great for intergation test or demostraction
+* Folder json contains a few json flat files
+* json_data.min.json is the original data set
+* json_tiny.json is version with only a small data set
+
 
 ### TODO
 
