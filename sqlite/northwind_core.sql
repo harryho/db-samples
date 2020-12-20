@@ -1,44 +1,50 @@
--- DROP DATABASE   /*!32312 IF EXISTS*/ NorthwindCore;
+-- Sqlite SQL script 
+-- Run command below to generate the sqlite db file
+-- cat northwind_core.sql | sqlite3 northwind.db
 
--- CREATE DATABASE NorthwindCore  CHAR SET utf8 COLLATE utf8_bin ; 
-
-
--- USE NorthwindCore;
 
 PRAGMA encoding="UTF-8";
 
 
+DROP TABLE IF EXISTS Category;
+
 CREATE TABLE Category (
-  entityId INT AUTO_INCREMENT NOT NULL,
+  entityId INTEGER PRIMARY KEY AUTOINCREMENT,
   categoryName VARCHAR(15) NOT NULL,
   description TEXT NULL,
-  picture BLOB NULL,
-  PRIMARY KEY (entityId)
+  picture BLOB NULL
   );
+
+
+DROP TABLE IF EXISTS Region;
 
 CREATE TABLE Region (
-  entityId INT AUTO_INCREMENT NOT NULL,
-  regiondescription VARCHAR(50) NOT NULL,
-  PRIMARY KEY (entityId)
+  entityId INTEGER  PRIMARY KEY AUTOINCREMENT,
+  regiondescription VARCHAR(50) NOT NULL
   );
 
+
+DROP TABLE IF EXISTS Territory;
+
 CREATE TABLE Territory (
-  entityId INT AUTO_INCREMENT NOT NULL,
+  entityId INTEGER PRIMARY KEY AUTOINCREMENT,
   territoryCode VARCHAR(20) NOT NULL,
   territorydescription VARCHAR(50) NOT NULL,
   regionId INT NOT NULL,
-  PRIMARY KEY (entityId),
   FOREIGN KEY (regionId) REFERENCES Region(entityId)
   );
 
+DROP TABLE IF EXISTS CustomerDemographics;
+
 CREATE TABLE CustomerDemographics (
-  entityId INT AUTO_INCREMENT NOT NULL,
-  customerDesc TEXT NULL,
-  PRIMARY KEY (entityId)
+  entityId INTEGER PRIMARY KEY AUTOINCREMENT,
+  customerDesc TEXT NULL
   );
 
+DROP TABLE IF EXISTS Customer;
+
 CREATE TABLE Customer (
-  entityId INT AUTO_INCREMENT NOT NULL,
+  entityId INTEGER PRIMARY KEY AUTOINCREMENT,
   companyName VARCHAR(40) NOT NULL,
   contactName VARCHAR(30) NULL,
   contactTitle VARCHAR(30) NULL,
@@ -50,25 +56,26 @@ CREATE TABLE Customer (
   phone VARCHAR(24) NULL,
   mobile VARCHAR(24) NULL,
   email VARCHAR(225) NULL,
-  fax VARCHAR(24) NULL,
-  PRIMARY KEY (entityId)
+  fax VARCHAR(24) NULL
   );
 
 
+DROP TABLE IF EXISTS CustomerCustomerDemographics;
+
 CREATE TABLE CustomerCustomerDemographics (
-  entityId INT AUTO_INCREMENT NOT NULL,
+  entityId INTEGER PRIMARY KEY AUTOINCREMENT,
   customerId  INT NOT NULL,
   customerTypeId  INT NOT NULL,
-  PRIMARY KEY (entityId),
   FOREIGN KEY (customerId)
       REFERENCES Customer(entityId),
   FOREIGN KEY (customerTypeId)
       REFERENCES CustomerDemographics(entityId)
   );
 
+DROP TABLE IF EXISTS Employee;
 
 CREATE TABLE Employee (
-  entityId INT AUTO_INCREMENT NOT NULL,
+  entityId INTEGER PRIMARY KEY AUTOINCREMENT,
   lastname VARCHAR(20) NOT NULL,
   firstname VARCHAR(10) NOT NULL,
   title VARCHAR(30) NULL,
@@ -87,23 +94,27 @@ CREATE TABLE Employee (
   photo BLOB NULL,
   notes BLOB NULL,
   mgrId INT NULL,
-  photoPath VARCHAR(255) NULL,
-  PRIMARY KEY (entityId)
+  photoPath VARCHAR(255) NULL
   );
 
+DROP TABLE IF EXISTS EmployeeTerritory;
+
+
 CREATE TABLE EmployeeTerritory (
-  entityId INT AUTO_INCREMENT NOT NULL,
+  entityId INTEGER PRIMARY KEY AUTOINCREMENT,
   employeeId INT NOT NULL,
   territoryCode VARCHAR(20) NOT NULL,
-  PRIMARY KEY (entityId),
   FOREIGN KEY (employeeId)
       REFERENCES Employee(entityId),
   FOREIGN KEY (territoryCode) 
       REFERENCES Territory(territoryCode)
   );
 
+
+DROP TABLE IF EXISTS Supplier;
+
 CREATE TABLE Supplier (
-  entityId INT AUTO_INCREMENT NOT NULL,
+  entityId INTEGER PRIMARY KEY AUTOINCREMENT,
   companyName VARCHAR(40) NOT NULL,
   contactName VARCHAR(30) NULL,
   contactTitle VARCHAR(30) NULL,
@@ -115,14 +126,13 @@ CREATE TABLE Supplier (
   phone VARCHAR(24) NULL,
   email VARCHAR(225) NULL,
   fax VARCHAR(24) NULL,
-  HomePage TEXT NULL,
-  PRIMARY KEY (entityId)
+  HomePage TEXT NULL
   );
 
 
 
 CREATE TABLE Product (
-  entityId INT AUTO_INCREMENT NOT NULL,
+  entityId INTEGER PRIMARY KEY AUTOINCREMENT,
   productName VARCHAR(40) NOT NULL,
   supplierId INT NULL,
   categoryId INT NULL,
@@ -132,7 +142,6 @@ CREATE TABLE Product (
   unitsOnOrder SMALLINT NULL,
   reorderLevel SMALLINT NULL,
   discontinued CHAR(1) NOT NULL,
-  PRIMARY KEY (entityId),
   FOREIGN KEY (supplierId) REFERENCES Supplier(entityId),
   FOREIGN KEY (categoryId) REFERENCES Category(entityId)
   );
@@ -140,17 +149,16 @@ CREATE TABLE Product (
 
 
 CREATE TABLE Shipper (
-  entityId INT AUTO_INCREMENT NOT NULL,
+  entityId INTEGER PRIMARY KEY AUTOINCREMENT,
   companyName VARCHAR(40) NOT NULL,
-  phone VARCHAR(44) NULL,
-  PRIMARY KEY (entityId)
+  phone VARCHAR(44) NULL
   );
 
 
 
 
 CREATE TABLE SalesOrder (
-  entityId INT AUTO_INCREMENT NOT NULL,
+  entityId INTEGER PRIMARY KEY AUTOINCREMENT,
   customerId INT NOT NULL,
   employeeId INT NULL,
   orderDate DATETIME NULL,
@@ -164,7 +172,6 @@ CREATE TABLE SalesOrder (
   shipRegion VARCHAR(15) NULL,
   shipPostalCode VARCHAR(10) NULL,
   shipCountry VARCHAR(15) NULL,
-  PRIMARY KEY (entityId),
   FOREIGN KEY (shipperId) REFERENCES Shipper(entityId),
   FOREIGN KEY (customerId) REFERENCES Customer(entityId) 
 
@@ -173,13 +180,12 @@ CREATE TABLE SalesOrder (
 
 
 CREATE TABLE OrderDetail (
-   entityId INT AUTO_INCREMENT NOT NULL,
+   entityId INTEGER PRIMARY KEY AUTOINCREMENT,
    orderId INT NOT NULL,
    productId INT NOT NULL,
    unitPrice DECIMAL(10, 2) NOT NULL,
    quantity SMALLINT NOT NULL,
    discount DECIMAL(10, 2) NOT NULL,
-   PRIMARY KEY (entityId),
    FOREIGN KEY (orderId) REFERENCES SalesOrder(entityId),
    FOREIGN KEY (productId) REFERENCES Product(entityId) 
   );
