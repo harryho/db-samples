@@ -99,7 +99,7 @@ mongo mongodb://localhost/northwind < getColNames.js
 #### Sqlite
 
 * Install [sqlite3](https://www.sqlite.org/)
-* Create northind db
+* Create northwind db
 
 ```
 cd db-samples/sqlite3
