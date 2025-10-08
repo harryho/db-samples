@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: northwind-mssql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong@Passw0rd
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - ./mssql/northwind.sql:/tmp/northwind.sql:ro
+      - ./scripts/init-db.sh:/tmp/init-db.sh:ro
+      - mssql_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -Q 'SELECT 1'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  mssql-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    depends_on:
+      mssql:
+        condition: service_healthy
+    environment:
+      - SA_PASSWORD=YourStrong@Passw0rd
+    volumes:
+      - ./mssql/northwind.sql:/tmp/northwind.sql:ro
+    command: >
+      bash -c "
+        echo 'Waiting for SQL Server to be ready...' &&
+        sleep 10 &&
+        echo 'Creating northwind database...' &&
+        /opt/mssql-tools/bin/sqlcmd -S mssql -U sa -P $$SA_PASSWORD -Q 'CREATE DATABASE northwind;' &&
+        echo 'Loading northwind.sql data...' &&
+        /opt/mssql-tools/bin/sqlcmd -S mssql -U sa -P $$SA_PASSWORD -d northwind -i /tmp/northwind.sql &&
+        echo 'Northwind database setup completed successfully!'
+      "
+
+volumes:
+  mssql_data:
