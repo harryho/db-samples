@@ -1,13 +1,10 @@
 # Northwind Database with MS SQL Server
 
-This Docker Compose setup launches a Microsoft SQL Server container and automatically creates the Northwind database with sample data.
+Docker setup for the Northwind sample database with MS SQL Server 2022.
 
-## Prerequisites
+> **Note:** This version uses **singular** table names (e.g., `Customer`, `SalesOrder`, `Product`).
 
-- Docker and Docker Compose installed on your system
-- At least 2GB of available RAM for the SQL Server container
-
-## Usage
+## Quick Start
 
 ### 1. Start the database
 
@@ -15,41 +12,34 @@ This Docker Compose setup launches a Microsoft SQL Server container and automati
 docker-compose up -d
 ```
 
-This will:
-- Start an MS SQL Server 2022 Express container
-- Create a database named `northwind`
-- Load all the sample data from `mssql/northwind.sql`
+This starts MS SQL Server and automatically creates the `northwind` database with sample data.
 
 ### 2. Connect to the database
 
-**Connection details:**
-- Server: `localhost,1433`
-- Database: `northwind`
-- Username: `sa`
-- Password: `YourStrong@Passw0rd`
-
-**Using sqlcmd (if you have SQL Server tools installed):**
-```bash
-sqlcmd -S localhost,1433 -U sa -P YourStrong@Passw0rd -d northwind
+**Connection string:**
+```
+Server=localhost,1433;Database=northwind;User Id=sa;Password=YourStrong@Passw0rd;
 ```
 
-**Using Docker to connect:**
+**Using Docker:**
 ```bash
-docker exec -it northwind-mssql /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -d northwind
+docker exec -it northwind-mssql /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P YourStrong@Passw0rd -d northwind
 ```
 
-### 3. Verify the installation
-
-Once connected, you can run a simple query to verify the data was loaded:
+### 3. Query the database
 
 ```sql
-SELECT COUNT(*) as TableCount 
-FROM information_schema.tables 
-WHERE table_type = 'BASE TABLE';
-```
+-- List customers
+SELECT TOP 5 CustomerID, CompanyName, Country FROM Customer;
 
-```sql
-SELECT TOP 5 * FROM Customers;
+-- Get orders
+SELECT TOP 5 OrderID, CustomerID, OrderDate FROM SalesOrder;
+
+-- Join customers with orders
+SELECT c.CompanyName, COUNT(o.OrderID) as TotalOrders
+FROM Customer c
+LEFT JOIN SalesOrder o ON c.CustomerID = o.CustomerID
+GROUP BY c.CompanyName;
 ```
 
 ### 4. Stop the database
@@ -58,41 +48,37 @@ SELECT TOP 5 * FROM Customers;
 docker-compose down
 ```
 
-To also remove the data volume:
+To remove data volume as well:
 ```bash
 docker-compose down -v
 ```
 
-## Database Schema
+## Main Tables
 
-The Northwind database contains the following main tables:
-- Categories
-- Customers
-- Employees
-- Order Details
-- Orders
-- Products
-- Shippers
-- Suppliers
-- Region
-- Territories
+- **Customer** - Customer information
+- **SalesOrder** - Customer orders
+- **Order Details** - Order line items
+- **Product** - Product catalog
+- **Category** - Product categories
+- **Employee** - Employee records
+- **Supplier** - Product suppliers
 
-## Security Notes
+For complete documentation, see `mssql/README.md`.
 
-- The default SA password is `YourStrong@Passw0rd` - change this for production use
-- The database is exposed on port 1433 - ensure your firewall is configured appropriately
-- For production environments, consider using environment variables or Docker secrets for passwords
+## Requirements
 
-## Troubleshooting
+- Docker and Docker Compose
+- 2GB+ available RAM
 
-### Container fails to start
-- Ensure you have enough memory available (minimum 2GB)
-- Check if port 1433 is already in use: `lsof -i :1433`
+## Recreate Database
 
-### Database initialization fails
-- Check the logs: `docker-compose logs mssql-init`
-- Verify the SQL file syntax in `mssql/northwind.sql`
+To reset the database with fresh data:
 
-### Connection issues
-- Wait for the health check to pass: `docker-compose ps`
-- Verify the container is running: `docker ps`
+```bash
+cd mssql
+./renew-northwind.sh
+```
+
+## Security Note
+
+⚠️ Default password is `YourStrong@Passw0rd` - change this for production use.
