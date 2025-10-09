@@ -57,6 +57,25 @@ services:
       retries: 5
       start_period: 30s
 
+  mysql:
+    image: mysql:8.0
+    container_name: northwind-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=YourStrong@Passw0rd
+      - MYSQL_DATABASE=Northwind
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pYourStrong@Passw0rd"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    command: --default-authentication-plugin=mysql_native_password
+
 volumes:
   mssql_data:
   postgres_data:
+  mysql_data:

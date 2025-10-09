@@ -1,9 +1,16 @@
 DROP DATABASE   /*!32312 IF EXISTS*/ Northwind;
 
-CREATE DATABASE Northwind  CHAR SET utf8 COLLATE utf8_bin ; 
+CREATE DATABASE Northwind  CHAR SET utf8mb4 COLLATE utf8mb4_general_ci ; 
 
 
 USE Northwind;
+
+-- Set SQL mode for case-insensitive identifiers and relaxed constraints
+SET SESSION sql_mode = 'IGNORE_SPACE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+
+-- Note: Table names are case-insensitive on Windows and macOS by default
+-- Column names are always case-insensitive in MySQL
+-- Database uses utf8mb4_general_ci collation for case-insensitive string comparisons
 
 CREATE TABLE Category (
   categoryId INT AUTO_INCREMENT NOT NULL
