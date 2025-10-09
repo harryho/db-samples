@@ -17,7 +17,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SQL_FILE="${SCRIPT_DIR}/northwind.sql"
 
 echo "=========================================="
-echo "Recreating Northwind Database"
+echo "Renewing Northwind Database"
 echo "=========================================="
 echo ""
 echo "Server: ${SERVER}:${PORT}"
