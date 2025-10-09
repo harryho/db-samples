@@ -35,7 +35,7 @@ sqlcmd -S localhost,1433 -U sa -P YourStrong@Passw0rd -d northwind
 
 **Using Docker to connect:**
 ```bash
-docker exec -it northwind-mssql /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -d northwind
+docker exec -it northwind-mssql /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -d northwind
 ```
 
 ### 3. Verify the installation

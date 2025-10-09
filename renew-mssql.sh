@@ -75,7 +75,7 @@ if [ $? -eq 0 ]; then
     echo "  Password: YourStrong@Passw0rd"
     echo ""
     echo "Connect using:"
-    echo "  docker exec -it northwind-mssql /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -d northwind"
+    echo "  docker exec -it northwind-mssql /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P YourStrong@Passw0rd -d northwind"
     echo ""
     echo "To stop: docker-compose down"
     echo "=========================================="

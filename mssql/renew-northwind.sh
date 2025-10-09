@@ -30,15 +30,17 @@ if [ ! -f "$SQL_FILE" ]; then
     exit 1
 fi
 
-# Function to check if sqlcmd is available
+# Function to check if sqlcmd is available and execute commands
+USE_DOCKER=false
+
 check_sqlcmd() {
     if command -v sqlcmd &> /dev/null; then
         echo "Using local sqlcmd"
-        SQLCMD="sqlcmd"
+        USE_DOCKER=false
         return 0
     elif docker ps --format '{{.Names}}' | grep -q "northwind-mssql"; then
         echo "Using sqlcmd from Docker container"
-        SQLCMD="docker exec -i northwind-mssql /opt/mssql-tools/bin/sqlcmd"
+        USE_DOCKER=true
         return 0
     else
         echo "Error: sqlcmd not found and Docker container 'northwind-mssql' is not running"
@@ -50,12 +52,21 @@ check_sqlcmd() {
     fi
 }
 
+# Function to execute sqlcmd
+run_sqlcmd() {
+    if [ "$USE_DOCKER" = true ]; then
+        docker exec -i northwind-mssql /opt/mssql-tools18/bin/sqlcmd -C "$@"
+    else
+        sqlcmd "$@"
+    fi
+}
+
 # Check for sqlcmd availability
 check_sqlcmd
 
 # Test connection
 echo "1. Testing connection to SQL Server..."
-$SQLCMD -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -Q "SELECT @@VERSION" -h -1 > /dev/null 2>&1
+run_sqlcmd -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -Q "SELECT @@VERSION" -h -1 > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     echo "   ✗ Failed to connect to SQL Server"
     echo "   Please check your connection parameters"
@@ -66,7 +77,7 @@ echo "   ✓ Connected successfully"
 # Drop database if it exists
 echo ""
 echo "2. Dropping existing database (if exists)..."
-$SQLCMD -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -Q "
+run_sqlcmd -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -Q "
 IF EXISTS (SELECT name FROM sys.databases WHERE name = '${DATABASE}')
 BEGIN
     ALTER DATABASE [${DATABASE}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
@@ -82,7 +93,7 @@ END
 # Create new database
 echo ""
 echo "3. Creating new database..."
-$SQLCMD -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -Q "
+run_sqlcmd -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -Q "
 CREATE DATABASE [${DATABASE}];
 PRINT 'Database ${DATABASE} created successfully';
 " -h -1
@@ -98,12 +109,26 @@ echo ""
 echo "4. Loading data from northwind.sql..."
 echo "   (This may take a minute...)"
 
-$SQLCMD -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -d ${DATABASE} -i "$SQL_FILE" > /dev/null 2>&1
+if [ "$USE_DOCKER" = true ]; then
+    # Copy SQL file into container first (use a different path to avoid volume conflicts)
+    echo "   Copying SQL file into container..."
+    docker cp "$SQL_FILE" northwind-mssql:/tmp/northwind-renew.sql
+    # Run sqlcmd inside container using the copied file
+    run_sqlcmd -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -d ${DATABASE} -i /tmp/northwind-renew.sql > /dev/null 2>&1
+    # Clean up the copied file
+    docker exec northwind-mssql rm -f /tmp/northwind-renew.sql 2>/dev/null || true
+else
+    run_sqlcmd -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -d ${DATABASE} -i "$SQL_FILE" > /dev/null 2>&1
+fi
 
 if [ $? -ne 0 ]; then
     echo "   ✗ Failed to load data from SQL file"
     echo "   Run manually to see errors:"
-    echo "   $SQLCMD -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -d ${DATABASE} -i $SQL_FILE"
+    if [ "$USE_DOCKER" = true ]; then
+        echo "   docker exec -i northwind-mssql /opt/mssql-tools18/bin/sqlcmd -C -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -d ${DATABASE} -i /tmp/northwind.sql"
+    else
+        echo "   sqlcmd -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -d ${DATABASE} -i $SQL_FILE"
+    fi
     exit 1
 fi
 echo "   ✓ Data loaded successfully"
@@ -111,7 +136,7 @@ echo "   ✓ Data loaded successfully"
 # Verify the database
 echo ""
 echo "5. Verifying database..."
-TABLE_COUNT=$($SQLCMD -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -d ${DATABASE} -Q "
+TABLE_COUNT=$(run_sqlcmd -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -d ${DATABASE} -Q "
 SET NOCOUNT ON;
 SELECT COUNT(*) FROM information_schema.tables WHERE table_type = 'BASE TABLE';
 " -h -1 | tr -d ' ')
@@ -123,10 +148,15 @@ echo "=========================================="
 echo "✓ Success!"
 echo "=========================================="
 echo ""
-echo "Database '${DATABASE}' has been renewd successfully"
+echo "Database '${DATABASE}' has been renewed successfully"
 echo ""
-echo "Connect using:"
-echo "  $SQLCMD -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -d ${DATABASE}"
+if [ "$USE_DOCKER" = true ]; then
+    echo "Connect using:"
+    echo "  docker exec -it northwind-mssql /opt/mssql-tools18/bin/sqlcmd -C -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -d ${DATABASE}"
+else
+    echo "Connect using:"
+    echo "  sqlcmd -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -d ${DATABASE}"
+fi
 echo ""
 echo "Sample query:"
 echo "  SELECT TOP 5 * FROM Customers;"

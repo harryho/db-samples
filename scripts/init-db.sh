@@ -6,7 +6,7 @@ sleep 30
 
 # Create the northwind database
 echo "Creating northwind database..."
-/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -Q "CREATE DATABASE northwind;"
+/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -Q "CREATE DATABASE northwind;"
 
 # Check if database was created successfully
 if [ $? -eq 0 ]; then
@@ -14,7 +14,7 @@ if [ $? -eq 0 ]; then
     
     # Run the northwind.sql script to populate the database
     echo "Loading northwind.sql data..."
-    /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -d northwind -i /docker-entrypoint-initdb.d/northwind.sql
+    /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -d northwind -i /docker-entrypoint-initdb.d/northwind.sql
     
     if [ $? -eq 0 ]; then
         echo "Northwind database setup completed successfully!"
