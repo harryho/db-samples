@@ -62,7 +62,7 @@ services:
     container_name: northwind-mysql
     environment:
       - MYSQL_ROOT_PASSWORD=YourStrong@Passw0rd
-      - MYSQL_DATABASE=Northwind
+      - MYSQL_DATABASE=northwind
     ports:
       - "3306:3306"
     volumes:
@@ -73,7 +73,7 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
-    command: --default-authentication-plugin=mysql_native_password
+    command: --default-authentication-plugin=mysql_native_password --lower-case-table-names=1
 
 volumes:
   mssql_data:
