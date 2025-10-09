@@ -2,31 +2,31 @@
 
 This folder contains the Northwind database SQL script and utilities for MS SQL Server.
 
+> **Note:** This version uses **singular** table names (e.g., `Customer`, `SalesOrder`, `Product`) instead of plural names. This differs from the official Microsoft Northwind database which uses plural table names (e.g., `Customers`, `Orders`, `Products`).
+
 ## Files
 
-- **northwind.sql** - Complete database schema and data for the Northwind sample database
-- **renew-northwind.sh** - Script to renew the Northwind database from scratch
+- **northwind.sql** - Complete database schema and data with singular table names
+- **renew-northwind.sh** - Script to recreate the Northwind database from scratch
+- **northwind.sql.backup** - Original version with plural table names (backup)
+- **northwind_order.sql.backup** - Version with `Order` table name (before SalesOrder rename)
 
 ## Quick Start
 
-### Option 1: Using the renew script (Recommended)
-
-Simply run the script from the mssql directory:
+### Using the renew script (Recommended)
 
 ```bash
 cd mssql
 ./renew-northwind.sh
 ```
 
-The script will:
+The script will automatically:
 1. Drop the existing `northwind` database (if it exists)
 2. Create a fresh `northwind` database
 3. Load all schema and data from `northwind.sql`
 4. Verify the installation
 
-### Option 2: Manual setup
-
-If you prefer to run the SQL manually:
+### Manual setup
 
 ```bash
 # Create the database
@@ -36,111 +36,69 @@ sqlcmd -S localhost,1433 -U sa -P YourStrong@Passw0rd -Q "CREATE DATABASE northw
 sqlcmd -S localhost,1433 -U sa -P YourStrong@Passw0rd -d northwind -i northwind.sql
 ```
 
+## Database Schema
+
+### Tables (Singular Names)
+- **Category** - Product categories
+- **Customer** - Customer information
+- **Employee** - Employee records
+- **EmployeeTerritory** - Employee-territory assignments
+- **SalesOrder** - Customer orders
+- **Order Details** - Order line items
+- **Product** - Product catalog
+- **Region** - Sales regions
+- **Shipper** - Shipping companies
+- **Supplier** - Product suppliers
+- **Territory** - Sales territories
+
+### Sample Queries
+
+```sql
+-- Get customers
+SELECT TOP 5 CustomerID, CompanyName, Country FROM Customer;
+
+-- Get products
+SELECT ProductID, ProductName, UnitPrice FROM Product WHERE UnitPrice > 20;
+
+-- Get orders with customer info
+SELECT o.OrderID, c.CompanyName, o.OrderDate 
+FROM SalesOrder o 
+JOIN Customer c ON o.CustomerID = c.CustomerID;
+```
+
 ## Configuration
 
-The `renew-northwind.sh` script uses environment variables for connection parameters:
+The `renew-northwind.sh` script uses environment variables for custom connection parameters:
 
 ```bash
-# Set custom connection parameters (optional)
-export MSSQL_SERVER=localhost      # Default: localhost
-export MSSQL_PORT=1433             # Default: 1433
-export MSSQL_USER=sa               # Default: sa
-export MSSQL_PASSWORD=YourStrong@Passw0rd  # Default: YourStrong@Passw0rd
+export MSSQL_SERVER=localhost                  # Default: localhost
+export MSSQL_PORT=1433                         # Default: 1433
+export MSSQL_USER=sa                           # Default: sa
+export MSSQL_PASSWORD=YourStrong@Passw0rd      # Default: YourStrong@Passw0rd
 
-# Run the script
 ./renew-northwind.sh
 ```
 
 ## Requirements
 
-The script will automatically detect and use:
-1. **sqlcmd** installed locally, OR
-2. **Docker container** named `northwind-mssql` (if running)
+The script automatically detects and uses:
+- **sqlcmd** installed locally, OR
+- **Docker container** named `northwind-mssql`
 
-If neither is available, the script will provide instructions.
+## Differences from Microsoft Version
 
-## Usage Examples
+This version has been modified from the official Microsoft Northwind database:
 
-### Example 1: Default connection (localhost)
-```bash
-./renew-northwind.sh
-```
+| Microsoft Version | This Version |
+|-------------------|--------------|
+| Customers | **Customer** |
+| Orders | **SalesOrder** |
+| Products | **Product** |
+| Employees | **Employee** |
+| Categories | **Category** |
+| Suppliers | **Supplier** |
+| Shippers | **Shipper** |
+| Territories | **Territory** |
+| EmployeeTerritories | **EmployeeTerritory** |
 
-### Example 2: Remote server
-```bash
-MSSQL_SERVER=192.168.1.100 MSSQL_PASSWORD=MyPassword ./renew-northwind.sh
-```
-
-### Example 3: Using Docker container
-```bash
-# First, start the Docker container
-docker-compose up -d mssql
-
-# Then run the script (it will auto-detect the container)
-./renew-northwind.sh
-```
-
-## Database Schema
-
-The Northwind database includes:
-
-### Tables
-- Categories
-- Customers
-- Employees
-- EmployeeTerritories
-- Order Details
-- Orders
-- Products
-- Region
-- Shippers
-- Suppliers
-- Territories
-
-### Views
-- Alphabetical list of products
-- Category Sales for 1997
-- Current Product List
-- Customer and Suppliers by City
-- Invoices
-- Order Details Extended
-- Order Subtotals
-- Orders Qry
-- Product Sales for 1997
-- Products Above Average Price
-- Products by Category
-- Quarterly Orders
-- Sales by Category
-- Sales Totals by Amount
-- Summary of Sales by Quarter
-- Summary of Sales by Year
-
-### Stored Procedures
-- CustOrderHist
-- CustOrdersDetail
-- CustOrdersOrders
-- Employee Sales by Country
-- Sales by Year
-- SalesByCategory
-- Ten Most Expensive Products
-
-## Troubleshooting
-
-### Connection failed
-- Verify SQL Server is running: `docker ps` or check service status
-- Check server address and port
-- Verify username and password
-- Ensure network connectivity to the server
-
-### Script fails to find sqlcmd
-- Install SQL Server command-line tools for your platform
-- OR run SQL Server in Docker and ensure container is named `northwind-mssql`
-
-### Database already in use
-The script automatically handles this by forcing all connections to close before dropping the database.
-
-## Notes
-
-- The script uses `SET SINGLE_USER WITH ROLLBACK IMMEDIATE` to forcefully close existing connections before dropping the database
-- All data will be lost when recreating the database
-- The SQL file does not include database creation - it only creates objects within an existing database
+All references, foreign keys, views, and stored procedures have been updated accordingly.
