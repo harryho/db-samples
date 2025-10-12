@@ -9,8 +9,6 @@ services:
     ports:
       - "1433:1433"
     volumes:
-      - ./mssql/northwind.sql:/tmp/northwind.sql:ro
-      - ./scripts/init-db.sh:/tmp/init-db.sh:ro
       - mssql_data:/var/opt/mssql
     healthcheck:
       test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -Q 'SELECT 1' -C"]
