@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Script to renew the MySQL container with fresh Northwind database
-# This will remove all existing data and reinitialize the database
+# Script to renew the MySQL container (mysql-infra)
+# This will remove all existing data and restart the container
 
 set -e  # Exit on error
 
 echo "=========================================="
-echo "Recreating MySQL Container"
+echo "Recreating MySQL Container (mysql-infra)"
 echo "=========================================="
 echo ""
 
@@ -19,7 +19,8 @@ fi
 
 # Stop and remove containers
 echo "1. Stopping and removing existing MySQL container..."
-docker-compose down mysql
+docker-compose stop mysql
+docker-compose rm -f mysql
 
 # Remove the volume to ensure fresh data
 echo ""
@@ -31,64 +32,17 @@ echo ""
 echo "3. Starting MySQL container..."
 docker-compose up -d mysql
 
-# Wait for MySQL to be healthy
-echo ""
-echo "4. Waiting for MySQL to be ready..."
-echo "   (This may take 10-30 seconds...)"
-
-MAX_WAIT=60
-COUNTER=0
-while [ $COUNTER -lt $MAX_WAIT ]; do
-    if docker-compose ps mysql | grep -q "healthy"; then
-        echo "   ✓ MySQL is ready!"
-        break
-    fi
-    sleep 5
-    COUNTER=$((COUNTER + 5))
-    echo "   Waiting... (${COUNTER}s/${MAX_WAIT}s)"
-done
-
-if [ $COUNTER -ge $MAX_WAIT ]; then
-    echo "   ✗ MySQL failed to become healthy within ${MAX_WAIT} seconds"
-    echo "   Check logs with: docker-compose logs mysql"
-    exit 1
-fi
-
-# Run the initialization script
-echo ""
-echo "5. Creating and populating Northwind database..."
-cd mysql
-./renew-northwind.sh
-EXIT_CODE=$?
-cd ..
-
-# Check if initialization was successful
-if [ $EXIT_CODE -eq 0 ]; then
+if [ $? -eq 0 ]; then
     echo ""
     echo "=========================================="
     echo "✓ Success!"
     echo "=========================================="
-    echo ""
-    echo "MySQL is running with Northwind database"
-    echo ""
-    echo "Connection details:"
-    echo "  Host:     localhost"
-    echo "  Port:     3306"
-    echo "  Database: northwind"
-    echo "  Username: root"
-    echo "  Password: YourStrong@Passw0rd"
-    echo ""
-    echo "Connect using:"
-    echo "  docker exec -it northwind-mysql mysql -u root -pYourStrong@Passw0rd -D northwind"
-    echo ""
-    echo "Sample query:"
-    echo "  SELECT * FROM Customer LIMIT 5;"
-    echo ""
+    echo "mysql-infra container is running."
     echo "To stop: docker-compose down"
     echo "=========================================="
 else
     echo ""
-    echo "✗ Database initialization failed"
+    echo "✗ Failed to start mysql-infra container"
     echo "Check logs with: docker-compose logs mysql"
     exit 1
 fi

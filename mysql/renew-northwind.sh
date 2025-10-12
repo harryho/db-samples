@@ -38,12 +38,12 @@ check_mysql() {
         echo "Using local mysql"
         USE_DOCKER=false
         return 0
-    elif docker ps --format '{{.Names}}' | grep -q "northwind-mysql"; then
+    elif docker ps --format '{{.Names}}' | grep -q "mysql-infra"; then
         echo "Using mysql from Docker container"
         USE_DOCKER=true
         return 0
     else
-        echo "Error: mysql not found and Docker container 'northwind-mysql' is not running"
+        echo "Error: mysql not found and Docker container 'mysql-infra' is not running"
         echo ""
         echo "Options:"
         echo "1. Install MySQL client tools"
@@ -55,7 +55,7 @@ check_mysql() {
 # Function to execute mysql
 run_mysql() {
     if [ "$USE_DOCKER" = true ]; then
-        docker exec -i northwind-mysql mysql -u root -p"$PASSWORD" "$@"
+        docker exec -i mysql-infra mysql -u root -p"$PASSWORD" "$@"
     else
         mysql -h "$HOST" -P "$PORT" -u "$USERNAME" -p"$PASSWORD" "$@"
     fi
@@ -82,9 +82,9 @@ echo "   (This may take a minute...)"
 
 if [ "$USE_DOCKER" = true ]; then
     # Copy SQL file to container and execute it (without specifying database)
-    docker cp "$SQL_FILE" northwind-mysql:/tmp/northwind.sql
-    docker exec -i northwind-mysql bash -c "mysql -u root -p'$PASSWORD' < /tmp/northwind.sql" 2>/dev/null
-    docker exec northwind-mysql rm -f /tmp/northwind.sql
+    docker cp "$SQL_FILE" mysql-infra:/tmp/northwind.sql
+    docker exec -i mysql-infra bash -c "mysql -u root -p'$PASSWORD' < /tmp/northwind.sql" 2>/dev/null
+    docker exec mysql-infra rm -f /tmp/northwind.sql
 else
     # Connect without specifying database since SQL file includes CREATE DATABASE
     mysql -h "$HOST" -P "$PORT" -u "$USERNAME" -p"$PASSWORD" < "$SQL_FILE" 2>/dev/null
@@ -94,7 +94,7 @@ if [ $? -ne 0 ]; then
     echo "   ✗ Failed to load data from SQL file"
     echo "   Run manually to see errors:"
     if [ "$USE_DOCKER" = true ]; then
-        echo "   docker exec -i northwind-mysql mysql -u root -pYourStrong@Passw0rd < $SQL_FILE"
+        echo "   docker exec -i mysql-infra mysql -u root -pYourStrong@Passw0rd < $SQL_FILE"
     else
         echo "   mysql -h $HOST -P $PORT -u $USERNAME -p$PASSWORD < $SQL_FILE"
     fi
@@ -118,7 +118,7 @@ echo "Database '${DATABASE}' has been renewed successfully"
 echo ""
 if [ "$USE_DOCKER" = true ]; then
     echo "Connect using:"
-    echo "  docker exec -it northwind-mysql mysql -u root -p${PASSWORD} -D ${DATABASE}"
+    echo "  docker exec -it mysql-infra mysql -u root -p${PASSWORD} -D ${DATABASE}"
 else
     echo "Connect using:"
     echo "  mysql -h ${HOST} -P ${PORT} -u ${USERNAME} -p${PASSWORD} -D ${DATABASE}"

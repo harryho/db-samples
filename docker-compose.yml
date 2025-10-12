@@ -1,7 +1,7 @@
 services:
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: northwind-mssql
+    container_name: mssql-infra
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=YourStrong@Passw0rd
@@ -41,7 +41,7 @@ services:
 
   postgres:
     image: postgres:16-alpine
-    container_name: northwind-postgres
+    container_name: postgres-infra
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=YourStrong@Passw0rd
@@ -59,7 +59,7 @@ services:
 
   mysql:
     image: mysql:8.0
-    container_name: northwind-mysql
+    container_name: mysql-infra
     environment:
       - MYSQL_ROOT_PASSWORD=YourStrong@Passw0rd
       - MYSQL_DATABASE=northwind

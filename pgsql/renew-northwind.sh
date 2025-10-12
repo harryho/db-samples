@@ -38,12 +38,12 @@ check_psql() {
         echo "Using local psql"
         USE_DOCKER=false
         return 0
-    elif docker ps --format '{{.Names}}' | grep -q "northwind-postgres"; then
+    elif docker ps --format '{{.Names}}' | grep -q "postgres-infra"; then
         echo "Using psql from Docker container"
         USE_DOCKER=true
         return 0
     else
-        echo "Error: psql not found and Docker container 'northwind-postgres' is not running"
+        echo "Error: psql not found and Docker container 'postgres-infra' is not running"
         echo ""
         echo "Options:"
         echo "1. Install PostgreSQL client tools"
@@ -55,7 +55,7 @@ check_psql() {
 # Function to execute psql
 run_psql() {
     if [ "$USE_DOCKER" = true ]; then
-        docker exec -i northwind-postgres psql -U postgres "$@"
+        docker exec -i postgres-infra psql -U postgres "$@"
     else
         PGPASSWORD="$PASSWORD" psql -h "$HOST" -p "$PORT" -U "$USERNAME" "$@"
     fi
@@ -106,8 +106,8 @@ echo "   (This may take a minute...)"
 # Extract only the table creation and data insertion parts (skip database creation)
 if [ "$USE_DOCKER" = true ]; then
     # Copy SQL file and process it in the container
-    docker cp "$SQL_FILE" northwind-postgres:/tmp/northwind.sql
-    docker exec -i northwind-postgres bash -c "
+    docker cp "$SQL_FILE" postgres-infra:/tmp/northwind.sql
+    docker exec -i postgres-infra bash -c "
         sed -n '/^DROP TABLE/,\$p' /tmp/northwind.sql | psql -U postgres -d ${DATABASE} > /dev/null 2>&1
         rm -f /tmp/northwind.sql
     "
@@ -119,7 +119,7 @@ if [ $? -ne 0 ]; then
     echo "   ✗ Failed to load data from SQL file"
     echo "   Run manually to see errors:"
     if [ "$USE_DOCKER" = true ]; then
-        echo "   docker exec -i northwind-postgres psql -U postgres -d ${DATABASE} < $SQL_FILE"
+        echo "   docker exec -i postgres-infra psql -U postgres -d ${DATABASE} < $SQL_FILE"
     else
         echo "   psql -h $HOST -p $PORT -U $USERNAME -d $DATABASE < $SQL_FILE"
     fi
@@ -143,7 +143,7 @@ echo "Database '${DATABASE}' has been renewed successfully"
 echo ""
 if [ "$USE_DOCKER" = true ]; then
     echo "Connect using:"
-    echo "  docker exec -it northwind-postgres psql -U postgres -d ${DATABASE}"
+    echo "  docker exec -it postgres-infra psql -U postgres -d ${DATABASE}"
 else
     echo "Connect using:"
     echo "  psql -h ${HOST} -p ${PORT} -U ${USERNAME} -d ${DATABASE}"

@@ -77,7 +77,7 @@ Use the provided renewal scripts to quickly create or refresh databases with sam
 **MySQL:**
 ```bash
 # Using Docker
-docker exec -it northwind-mysql mysql -u root -pYourStrong@Passw0rd -D northwind
+docker exec -it mysql-infra mysql -u root -pYourStrong@Passw0rd -D northwind
 
 # Using local MySQL client
 mysql -h localhost -P 3306 -u root -pYourStrong@Passw0rd -D northwind
@@ -86,7 +86,7 @@ mysql -h localhost -P 3306 -u root -pYourStrong@Passw0rd -D northwind
 **PostgreSQL:**
 ```bash
 # Using Docker
-docker exec -it northwind-postgres psql -U postgres -d northwind
+docker exec -it postgres-infra psql -U postgres -d northwind
 
 # Using local psql client
 psql -h localhost -p 5432 -U postgres -d northwind
