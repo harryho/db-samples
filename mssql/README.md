@@ -83,7 +83,7 @@ export MSSQL_PASSWORD=YourStrong@Passw0rd      # Default: YourStrong@Passw0rd
 
 The script automatically detects and uses:
 - **sqlcmd** installed locally, OR
-- **Docker container** named `northwind-mssql`
+- **Docker container** named `mssql-infra`
 
 ## Differences from Microsoft Version
 

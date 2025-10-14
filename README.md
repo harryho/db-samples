@@ -95,7 +95,7 @@ psql -h localhost -p 5432 -U postgres -d northwind
 **MS SQL Server:**
 ```bash
 # Using Docker
-docker exec -it northwind-mssql /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -d northwind -C
+docker exec -it mssql-infra /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -d northwind -C
 
 # Using local sqlcmd (if installed)
 sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -d northwind

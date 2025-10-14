@@ -38,12 +38,12 @@ check_sqlcmd() {
         echo "Using local sqlcmd"
         USE_DOCKER=false
         return 0
-    elif docker ps --format '{{.Names}}' | grep -q "northwind-mssql"; then
+    elif docker ps --format '{{.Names}}' | grep -q "mssql-infra"; then
         echo "Using sqlcmd from Docker container"
         USE_DOCKER=true
         return 0
     else
-        echo "Error: sqlcmd not found and Docker container 'northwind-mssql' is not running"
+    echo "Error: sqlcmd not found and Docker container 'mssql-infra' is not running"
         echo ""
         echo "Options:"
         echo "1. Install SQL Server command-line tools"
@@ -55,7 +55,7 @@ check_sqlcmd() {
 # Function to execute sqlcmd
 run_sqlcmd() {
     if [ "$USE_DOCKER" = true ]; then
-        docker exec -i northwind-mssql /opt/mssql-tools18/bin/sqlcmd -C "$@"
+    docker exec -i mssql-infra /opt/mssql-tools18/bin/sqlcmd -C "$@"
     else
         sqlcmd "$@"
     fi
@@ -112,11 +112,11 @@ echo "   (This may take a minute...)"
 if [ "$USE_DOCKER" = true ]; then
     # Copy SQL file into container first (use a different path to avoid volume conflicts)
     echo "   Copying SQL file into container..."
-    docker cp "$SQL_FILE" northwind-mssql:/tmp/northwind-renew.sql
+    docker cp "$SQL_FILE" mssql-infra:/tmp/northwind-renew.sql
     # Run sqlcmd inside container using the copied file
     run_sqlcmd -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -d ${DATABASE} -i /tmp/northwind-renew.sql > /dev/null 2>&1
     # Clean up the copied file
-    docker exec northwind-mssql rm -f /tmp/northwind-renew.sql 2>/dev/null || true
+    docker exec mssql-infra rm -f /tmp/northwind-renew.sql 2>/dev/null || true
 else
     run_sqlcmd -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -d ${DATABASE} -i "$SQL_FILE" > /dev/null 2>&1
 fi
@@ -125,7 +125,7 @@ if [ $? -ne 0 ]; then
     echo "   ✗ Failed to load data from SQL file"
     echo "   Run manually to see errors:"
     if [ "$USE_DOCKER" = true ]; then
-        echo "   docker exec -i northwind-mssql /opt/mssql-tools18/bin/sqlcmd -C -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -d ${DATABASE} -i /tmp/northwind.sql"
+    echo "   docker exec -i mssql-infra /opt/mssql-tools18/bin/sqlcmd -C -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -d ${DATABASE} -i /tmp/northwind.sql"
     else
         echo "   sqlcmd -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -d ${DATABASE} -i $SQL_FILE"
     fi
@@ -152,7 +152,7 @@ echo "Database '${DATABASE}' has been renewed successfully"
 echo ""
 if [ "$USE_DOCKER" = true ]; then
     echo "Connect using:"
-    echo "  docker exec -it northwind-mssql /opt/mssql-tools18/bin/sqlcmd -C -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -d ${DATABASE}"
+    echo "  docker exec -it mssql-infra /opt/mssql-tools18/bin/sqlcmd -C -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -d ${DATABASE}"
 else
     echo "Connect using:"
     echo "  sqlcmd -S ${SERVER},${PORT} -U ${USERNAME} -P ${PASSWORD} -d ${DATABASE}"

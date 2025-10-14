@@ -10,14 +10,14 @@ HOST="${MYSQL_HOST:-localhost}"
 PORT="${MYSQL_PORT:-3306}"
 USERNAME="${MYSQL_USER:-root}"
 PASSWORD="${MYSQL_PASSWORD:-YourStrong@Passw0rd}"
-DATABASE="northwind"
+DATABASE="Northwind"
 
 # Get the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SQL_FILE="${SCRIPT_DIR}/northwind.sql"
 
 echo "=========================================="
-echo "Recreating northwind Database (MySQL)"
+echo "Recreating Northwind Database (MySQL)"
 echo "=========================================="
 echo ""
 echo "Server: ${HOST}:${PORT}"
