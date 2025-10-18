@@ -44,7 +44,7 @@ Use the provided renewal scripts to quickly create or refresh databases with sam
 
 **MySQL:**
 ```bash
-./renew-mysql.sh
+./renew-mysql-infra.sh
 ```
 - Recreates the MySQL container with fresh data
 - Database: `northwind` (lowercase, case-insensitive)
@@ -54,7 +54,7 @@ Use the provided renewal scripts to quickly create or refresh databases with sam
 
 **PostgreSQL:**
 ```bash
-./renew-postgres.sh
+./renew-pgsql-infra.sh
 ```
 - Recreates the PostgreSQL container with fresh data
 - Database: `northwind`
@@ -64,7 +64,7 @@ Use the provided renewal scripts to quickly create or refresh databases with sam
 
 **MS SQL Server:**
 ```bash
-./renew-mssql.sh
+./renew-mssql-infra.sh
 ```
 - Recreates the MS SQL Server container with fresh data
 - Database: `northwind`
@@ -161,7 +161,7 @@ The sample databases in the project are customized. Some tables' and columns' na
 
 ### Restore the database from SQL script
 
-> **Note:** For easier setup, consider using the [Docker method](#quick-start-with-docker-recommended) with the `./renew-mysql.sh` or other renewal scripts.
+> **Note:** For easier setup, consider using the [Docker method](#quick-start-with-docker-recommended) with the `./renew-mysql-infra.sh` or other renewal scripts.
 
 #### MySql
 
@@ -307,7 +307,7 @@ docker-compose restart <service-name>
 docker-compose down -v
 
 # Restart fresh
-./renew-mysql.sh    # or renew-postgres.sh, or renew-mssql.sh
+./renew-mysql-infra.sh    # or renew-pgsql-infra.sh, or renew-mssql-infra.sh
 ```
 
 

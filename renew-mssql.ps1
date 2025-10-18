@@ -11,7 +11,7 @@
 
 .NOTES
     This script must be run from the db-samples directory where docker-compose.yml
-    is located. Equivalent to renew-mssql.sh for PowerShell environments.
+    is located. Equivalent to renew-mssql-infra.sh for PowerShell environments.
 #>
 
 [CmdletBinding()]
