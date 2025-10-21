@@ -39,7 +39,7 @@ services:
 
   postgres:
     image: postgres:16-alpine
-    container_name: postgres-infra
+    container_name: pgsql-infra
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=YourStrong@Passw0rd

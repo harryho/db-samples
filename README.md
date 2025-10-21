@@ -86,7 +86,7 @@ mysql -h localhost -P 3306 -u root -pYourStrong@Passw0rd -D northwind
 **PostgreSQL:**
 ```bash
 # Using Docker
-docker exec -it postgres-infra psql -U postgres -d northwind
+docker exec -it pgsql-infra psql -U postgres -d northwind
 
 # Using local psql client
 psql -h localhost -p 5432 -U postgres -d northwind

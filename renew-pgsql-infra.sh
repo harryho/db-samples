@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Script to renew the PostgreSQL container (postgres-infra)
+# Script to renew the PostgreSQL container (pgsql-infra)
 # This will remove all existing data and restart the container
 
 set -e  # Exit on error
 
 echo "=========================================="
-echo "Recreating PostgreSQL Container (postgres-infra)"
+echo "Recreating PostgreSQL Container (pgsql-infra)"
 echo "=========================================="
 echo ""
 
@@ -37,12 +37,12 @@ if [ $? -eq 0 ]; then
     echo "=========================================="
     echo "✓ Success!"
     echo "=========================================="
-    echo "postgres-infra container is running."
+    echo "pgsql-infra container is running."
     echo "To stop: docker-compose down"
     echo "=========================================="
 else
     echo ""
-    echo "✗ Failed to start postgres-infra container"
+    echo "✗ Failed to start pgsql-infra container"
     echo "Check logs with: docker-compose logs postgres"
     exit 1
 fi

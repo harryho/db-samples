@@ -44,7 +44,7 @@ sqlcmd -S localhost,1433 -U sa -P YourStrong@Passw0rd -d northwind -i northwind.
 - **Employee** - Employee records
 - **EmployeeTerritory** - Employee-territory assignments
 - **SalesOrder** - Customer orders
-- **Order Details** - Order line items
+- **OrderDetails** - Order line items
 - **Product** - Product catalog
 - **Region** - Sales regions
 - **Shipper** - Shipping companies
