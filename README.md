@@ -6,9 +6,9 @@ This project is inspired by [Microsoft Sample Databases](https://github.com/Micr
 This folder contains scripts to create and load the Northwind sample databases.
 
 
-If you are looking for the script of MS Sql Server, please check out the repository from their github.
+If you are looking for the **original** script of MS Sql Server, please check out the repository from their github.
 
-This project is created to create a sample CRM-like demo database in a few seconds with tiny test data.
+This project is created to create a sample CRM-like demo database in a few seconds with some test data.
 
 ## Quick Start with Docker (Recommended)
 
