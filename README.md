@@ -50,7 +50,7 @@ Use the provided renewal scripts to quickly create or refresh databases with sam
 - Database: `northwind` (lowercase, case-insensitive)
 - Port: 3306
 - Username: `root`
-- Password: `YourStrong@Passw0rd`
+- Password: `YourStrong!Passw0rd`
 
 **PostgreSQL:**
 ```bash
@@ -60,7 +60,7 @@ Use the provided renewal scripts to quickly create or refresh databases with sam
 - Database: `northwind`
 - Port: 5432
 - Username: `postgres`
-- Password: `YourStrong@Passw0rd`
+- Password: `YourStrong!Passw0rd`
 
 **MS SQL Server:**
 ```bash
@@ -70,17 +70,17 @@ Use the provided renewal scripts to quickly create or refresh databases with sam
 - Database: `northwind`
 - Port: 1433
 - Username: `sa`
-- Password: `YourStrong@Passw0rd`
+- Password: `YourStrong!Passw0rd`
 
 ### Connection Examples
 
 **MySQL:**
 ```bash
 # Using Docker
-docker exec -it mysql-infra mysql -u root -pYourStrong@Passw0rd -D northwind
+docker exec -it mysql-infra mysql -u root -pYourStrong!Passw0rd -D northwind
 
 # Using local MySQL client
-mysql -h localhost -P 3306 -u root -pYourStrong@Passw0rd -D northwind
+mysql -h localhost -P 3306 -u root -pYourStrong!Passw0rd -D northwind
 ```
 
 **PostgreSQL:**
@@ -95,10 +95,10 @@ psql -h localhost -p 5432 -U postgres -d northwind
 **MS SQL Server:**
 ```bash
 # Using Docker
-docker exec -it mssql-infra /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -d northwind -C
+docker exec -it mssql-infra /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P YourStrong!Passw0rd -d northwind -C
 
 # Using local sqlcmd (if installed)
-sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -d northwind
+sqlcmd -S localhost -U sa -P YourStrong!Passw0rd -d northwind
 ```
 
 ### Database Features
@@ -264,7 +264,7 @@ cd mssql
 
 **Manual import:**
 ```bash
-sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -i mssql/northwind.sql
+sqlcmd -S localhost -U sa -P YourStrong!Passw0rd -i mssql/northwind.sql
 ```
 
 ## Docker Compose Configuration

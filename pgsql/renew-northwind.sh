@@ -9,7 +9,7 @@ set -e  # Exit on error
 HOST="${POSTGRES_HOST:-localhost}"
 PORT="${POSTGRES_PORT:-5432}"
 USERNAME="${POSTGRES_USER:-postgres}"
-PASSWORD="${POSTGRES_PASSWORD:-YourStrong@Passw0rd}"
+PASSWORD="${POSTGRES_PASSWORD:-YourStrong!Passw0rd}"
 DATABASE="northwind"
 
 # Get the directory where this script is located

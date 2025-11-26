@@ -9,7 +9,7 @@ set -e  # Exit on error
 SERVER="${MSSQL_SERVER:-localhost}"
 PORT="${MSSQL_PORT:-1433}"
 USERNAME="${MSSQL_USER:-sa}"
-PASSWORD="${MSSQL_PASSWORD:-YourStrong@Passw0rd}"
+PASSWORD="${MSSQL_PASSWORD:-YourStrong!Passw0rd}"
 DATABASE="northwind"
 
 # Get the directory where this script is located

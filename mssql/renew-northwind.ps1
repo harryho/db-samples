@@ -19,7 +19,7 @@ param (
     [string]$Server   = ${env:MSSQL_SERVER}   ?? 'localhost',
     [string]$Port     = ${env:MSSQL_PORT}     ?? '1433',
     [string]$Username = ${env:MSSQL_USER}     ?? 'sa',
-    [string]$Password = ${env:MSSQL_PASSWORD} ?? 'YourStrong@Passw0rd',
+    [string]$Password = ${env:MSSQL_PASSWORD} ?? 'YourStrong!Passw0rd',
     [string]$Database = 'northwind'
 )
 

@@ -30,10 +30,10 @@ The script will automatically:
 
 ```bash
 # Create the database
-sqlcmd -S localhost,1433 -U sa -P YourStrong@Passw0rd -Q "CREATE DATABASE northwind;"
+sqlcmd -S localhost,1433 -U sa -P YourStrong!Passw0rd -Q "CREATE DATABASE northwind;"
 
 # Load the data
-sqlcmd -S localhost,1433 -U sa -P YourStrong@Passw0rd -d northwind -i northwind.sql
+sqlcmd -S localhost,1433 -U sa -P YourStrong!Passw0rd -d northwind -i northwind.sql
 ```
 
 ## Database Schema
@@ -74,7 +74,7 @@ The `renew-northwind.sh` script uses environment variables for custom connection
 export MSSQL_SERVER=localhost                  # Default: localhost
 export MSSQL_PORT=1433                         # Default: 1433
 export MSSQL_USER=sa                           # Default: sa
-export MSSQL_PASSWORD=YourStrong@Passw0rd      # Default: YourStrong@Passw0rd
+export MSSQL_PASSWORD=YourStrong!Passw0rd      # Default: YourStrong!Passw0rd
 
 ./renew-northwind.sh
 ```

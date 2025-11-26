@@ -4,14 +4,14 @@ services:
     container_name: mssql-infra
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=YourStrong@Passw0rd
+      - SA_PASSWORD=YourStrong!Passw0rd
       - MSSQL_PID=Express
     ports:
       - "1433:1433"
     volumes:
       - mssql_data:/var/opt/mssql
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -Q 'SELECT 1' -C"]
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P YourStrong!Passw0rd -Q 'SELECT 1' -C"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -23,7 +23,7 @@ services:
       mssql:
         condition: service_healthy
     environment:
-      - SA_PASSWORD=YourStrong@Passw0rd
+      - SA_PASSWORD=YourStrong!Passw0rd
     volumes:
       - ./mssql/northwind.sql:/tmp/northwind.sql:ro
     command: >
@@ -42,7 +42,7 @@ services:
     container_name: pgsql-infra
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=YourStrong@Passw0rd
+      - POSTGRES_PASSWORD=YourStrong!Passw0rd
       - POSTGRES_DB=postgres
     ports:
       - "5432:5432"
@@ -59,14 +59,14 @@ services:
     image: mysql:8.0
     container_name: mysql-infra
     environment:
-      - MYSQL_ROOT_PASSWORD=YourStrong@Passw0rd
+      - MYSQL_ROOT_PASSWORD=YourStrong!Passw0rd
       - MYSQL_DATABASE=northwind
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pYourStrong@Passw0rd"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pYourStrong!Passw0rd"]
       interval: 10s
       timeout: 5s
       retries: 5

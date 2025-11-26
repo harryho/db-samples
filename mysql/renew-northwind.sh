@@ -9,7 +9,7 @@ set -e  # Exit on error
 HOST="${MYSQL_HOST:-localhost}"
 PORT="${MYSQL_PORT:-3306}"
 USERNAME="${MYSQL_USER:-root}"
-PASSWORD="${MYSQL_PASSWORD:-YourStrong@Passw0rd}"
+PASSWORD="${MYSQL_PASSWORD:-YourStrong!Passw0rd}"
 DATABASE="Northwind"
 
 # Get the directory where this script is located
@@ -94,7 +94,7 @@ if [ $? -ne 0 ]; then
     echo "   ✗ Failed to load data from SQL file"
     echo "   Run manually to see errors:"
     if [ "$USE_DOCKER" = true ]; then
-        echo "   docker exec -i mysql-infra mysql -u root -pYourStrong@Passw0rd < $SQL_FILE"
+        echo "   docker exec -i mysql-infra mysql -u root -pYourStrong!Passw0rd < $SQL_FILE"
     else
         echo "   mysql -h $HOST -P $PORT -u $USERNAME -p$PASSWORD < $SQL_FILE"
     fi
