@@ -10,6 +10,44 @@ If you are looking for the **original** script of MS Sql Server, please check ou
 
 This project is created to create a sample CRM-like demo database in a few seconds with some test data.
 
+## Which sample should I use?
+
+| | **ecommerce** (recommended for new development) | **northwind** (classic) |
+|---|---|---|
+| Dialects | PostgreSQL only (for now) | MySQL, PostgreSQL, MS SQL Server, SQLite, MongoDB |
+| Schema style | Modern: foreign keys, identity columns, `timestamptz`, CHECK constraints, `jsonb`, generated columns, full-text search | 1990s Northwind port, kept close to the original |
+| Domain | Core e-commerce: users, addresses, catalog with variants/SKUs, carts, orders with status lifecycle, payments, shipments, inventory ledger | Classic CRM/ERP: customers, employees, orders, suppliers, territories |
+| Use it when | You are building or learning against a contemporary database design | You follow a tutorial/book that expects Northwind, or need the well-known dataset |
+
+**New to this repo? Start with `ecommerce`:**
+
+```bash
+# 1. Start (or reset) the PostgreSQL container
+./renew-pgsql-infra.sh          # Windows: ./renew-pgsql-infra.ps1
+
+# 2. Create and seed the ecommerce database
+./pgsql/renew-ecommerce.sh      # Windows: ./pgsql/renew-ecommerce.ps1
+
+# 3. (optional) run the sanity checks / demo queries
+docker exec -i pgsql-infra psql -U postgres -d ecommerce < pgsql/verify-ecommerce.sql
+```
+
+Then connect with `docker exec -it pgsql-infra psql -U postgres -d ecommerce` and try:
+
+```sql
+-- top products by revenue
+SELECT p.name, sum(oi.line_total) AS revenue
+FROM order_items oi
+JOIN product_variants v USING (variant_id)
+JOIN products p USING (product_id)
+GROUP BY p.name ORDER BY revenue DESC LIMIT 10;
+
+-- full-text product search
+SELECT name FROM products WHERE search @@ to_tsquery('english', 'product');
+```
+
+The Northwind instructions below remain fully supported.
+
 ## Quick Start with Docker (Recommended)
 
 The easiest way to get started is using Docker Compose, which provides pre-configured containers for MySQL, PostgreSQL, and MS SQL Server.
