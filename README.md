@@ -1,14 +1,14 @@
-Northwind sample database for MySql, PostgresQL, and more
+Northwind sample database for MySQL, PostgreSQL, and more
 ====
 
-This project is inspired by [Microsoft Sample Databases](https://github.com/Microsoft/sql-server-samples), but it only targets other databases, such as MySql, PostgresQL, etc. 
+This project is inspired by [Microsoft Sample Databases](https://github.com/Microsoft/sql-server-samples), but it mainly focuses on other open-source databases, such as MySQL and PostgreSQL.
 
-This folder contains scripts to create and load the Northwind sample databases.
+This repository contains scripts to create and load the sample databases.
 
 
-If you are looking for the **original** script of MS Sql Server, please check out the repository from their github.
+If you are looking for the **original** MS SQL Server scripts, please check out Microsoft's repository on GitHub.
 
-This project is created to create a sample CRM-like demo database in a few seconds with some test data.
+This project lets you create a sample CRM-like demo database, populated with test data, in a few seconds.
 
 ## Which sample should I use?
 
@@ -28,7 +28,7 @@ This project is created to create a sample CRM-like demo database in a few secon
 # 2. Create and seed the ecommerce database
 ./pgsql/renew-ecommerce.sh      # Windows: ./pgsql/renew-ecommerce.ps1
 
-# 3. (optional) run the sanity checks / demo queries
+# 3. (Optional) Run the sanity checks / demo queries
 docker exec -i pgsql-infra psql -U postgres -d ecommerce < pgsql/verify-ecommerce.sql
 ```
 
@@ -170,18 +170,18 @@ If you prefer to install databases manually without Docker, you can use the SQL 
 
 ### Caveat
 
-The sample databases in the project are customized. Some tables' and columns' names have been changed on purpose. 
+The sample databases in this project are customized. Some table and column names have been changed on purpose.
 
-### Difference from the sample of MS Sql Server
+### Differences from the MS SQL Server sample
 
-* Additional columns on some tables, e.g. email, mobile. 
-* All photo sample data has been removed, and additional photoPath is added for flexible implementation.
-* NorthwindCore is designed for Entity Framework
+* Some tables have additional columns, e.g. `email` and `mobile`.
+* All photo sample data has been removed; a `photoPath` column has been added instead, for more flexible implementations.
+* NorthwindCore is designed for Entity Framework.
 
 ### ER Diagram
 
-* The ER diagram only contains PK and FKs
-* The ER file is created by MySQl Workbrench. You can open the file with the same tool.
+* The ER diagrams only contain primary and foreign keys.
+* The ER files were created with MySQL Workbench; you can open them with the same tool.
 
 #### Northwind 
 
@@ -191,7 +191,7 @@ The sample databases in the project are customized. Some tables' and columns' na
 ####  NorthwindCore
 
 
-* Every table in NorthwindCore contains column EntityId.  
+* Every table in NorthwindCore contains an `EntityId` column.
 
 ![northwindcore_er_diagram](mysql/northwindcore_er_diagram.png)
 
@@ -201,7 +201,7 @@ The sample databases in the project are customized. Some tables' and columns' na
 
 > **Note:** For easier setup, consider using the [Docker method](#quick-start-with-docker-recommended) with the `./renew-mysql-infra.sh` or other renewal scripts.
 
-#### MySql
+#### MySQL
 
 **Using the renewal script (recommended):**
 ```bash
@@ -215,7 +215,7 @@ mysql -u user_id -p northwind < mysql/northwind.sql
 ```
 
 
-#### PostgresQL
+#### PostgreSQL
 
 **Using the renewal script (recommended):**
 ```bash
@@ -231,16 +231,16 @@ psql -d postgres -U postgres -f pgsql/northwind.sql
 
 #### MongoDB
 
-* Firstly, install MongoDB community server, shell and tools
-* Launch the mongoDB server
+* First, install the MongoDB Community Server, shell, and tools
+* Launch the MongoDB server
 
 ```
-# Launch mongodb in Linux 
+# Launch MongoDB on Linux
 systemctl start mongod
 
 ```
 
-* Create the db northwind and import the data
+* Create the `northwind` database and import the data
 
 ```
 sh mongo_import.sh
@@ -269,26 +269,26 @@ mongo mongodb://localhost/northwind < getColNames.js
 
 ```
 
-#### Sqlite
+#### SQLite
 
 * Install [sqlite3](https://www.sqlite.org/)
-* Create northwind db
+* Create the northwind database
 
 ```
-cd db-samples/sqlite3
+cd db-samples/sqlite
 sqlite3 northwind.db < northwind_core.sql
 sqlite3 northwind.db
 >.tables
 ```
 
-#### Json Flat file
+#### JSON flat files
 
-* Json flat file is great for intergation test or demostraction
-* Folder json contains a few json flat files
-* json_data.min.json is the original data set
-* json_tiny.json is version with only a small data set
+* JSON flat files are great for integration tests or demonstrations
+* The `json` folder contains a few JSON flat files
+* `json_data.min.json` is the original data set
+* `json_tiny.json` is a version with only a small data set
 
-# MS SQL Server
+## MS SQL Server
 
 This folder `mssql` contains the Northwind database SQL script and utilities for MS SQL Server.
 
