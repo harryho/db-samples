@@ -3,3 +3,9 @@ dump/*
 
 ## Sqlite
 *.db
+
+# DS_Store
+.DS_Store
+
+# docs
+docs/*
