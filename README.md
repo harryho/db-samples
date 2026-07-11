@@ -14,12 +14,12 @@ This project lets you create a sample CRM-like demo database, populated with tes
 
 | | **ecommerce** (recommended for new development) | **northwind** (classic) |
 |---|---|---|
-| Dialects | PostgreSQL only (for now) | MySQL, PostgreSQL, MS SQL Server, SQLite, MongoDB |
-| Schema style | Modern: foreign keys, identity columns, `timestamptz`, CHECK constraints, `jsonb`, generated columns, full-text search | 1990s Northwind port, kept close to the original |
+| Dialects | PostgreSQL, MySQL, MongoDB (document model) | MySQL, PostgreSQL, MS SQL Server, SQLite, MongoDB |
+| Schema style | Modern: foreign keys, identity/auto-increment columns, CHECK constraints, JSON columns, generated columns, full-text search; embedded documents on MongoDB | 1990s Northwind port, kept close to the original |
 | Domain | Core e-commerce: users, addresses, catalog with variants/SKUs, carts, orders with status lifecycle, payments, shipments, inventory ledger | Classic CRM/ERP: customers, employees, orders, suppliers, territories |
 | Use it when | You are building or learning against a contemporary database design | You follow a tutorial/book that expects Northwind, or need the well-known dataset |
 
-**New to this repo? Start with `ecommerce`:**
+**New to this repo? Start with `ecommerce` on PostgreSQL:**
 
 ```bash
 # 1. Start (or reset) the PostgreSQL container
@@ -30,6 +30,22 @@ This project lets you create a sample CRM-like demo database, populated with tes
 
 # 3. (Optional) Run the sanity checks / demo queries
 docker exec -i pgsql-infra psql -U postgres -d ecommerce < pgsql/verify-ecommerce.sql
+```
+
+**Prefer MySQL?**
+
+```bash
+./renew-mysql-infra.sh          # Windows: ./renew-mysql-infra.ps1
+./mysql/renew-ecommerce.sh      # Windows: ./mysql/renew-ecommerce.ps1
+docker exec -i mysql-infra mysql -u root -p'YourStrong!Passw0rd' -D ecommerce < mysql/verify-ecommerce.sql
+```
+
+**Prefer MongoDB?** The same data ships as an embedded-document model
+(addresses inside users; variants, images and stock inside products; items,
+status history, payment and shipment inside orders):
+
+```bash
+cd mongo/ecommerce && sh mongo_import.sh    # needs mongoimport; MONGO_URI overrides the default localhost
 ```
 
 Then connect with `docker exec -it pgsql-infra psql -U postgres -d ecommerce` and try:
