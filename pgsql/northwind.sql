@@ -16,9 +16,13 @@ CREATE DATABASE Northwind
     tablespace = pg_default 
     lc_collate = 'en_AU.UTF-8' 
     lc_ctype = 'en_AU.UTF-8'
-    connection LIMIT = -1 
-    template template0; 
+    connection LIMIT = -1
+    template template0;
 
+-- CREATE DATABASE does not switch the session. The next line connects when
+-- run under psql; pgAdmin users must connect to 'northwind' manually before
+-- running the rest of this script. (renew-northwind.sh skips this header.)
+\connect northwind
 
 -- Database: Northwind
 
@@ -55,9 +59,9 @@ CREATE TABLE  Territory
 
 DROP TABLE IF EXISTS CustomerCustomerDemographic;
 
-CREATE TABLE CustomerCustomerDemographic 
-  ( 
-     customerid     VARCHAR (5) NOT NULL, 
+CREATE TABLE CustomerCustomerDemographic
+  (
+     customerid     INT NOT NULL,
      customertypeid VARCHAR (10) NOT NULL, 
      PRIMARY KEY ( customerid, customertypeid ) 
   ); 
@@ -171,7 +175,7 @@ DROP TABLE IF EXISTS SalesOrder;
 CREATE TABLE SalesOrder 
   ( 
      orderid        SERIAL NOT NULL, 
-     custid         VARCHAR (15) NULL, 
+     custid         INT NULL,
      empid          INT NULL, 
      orderdate      TIMESTAMP NULL, 
      requireddate   TIMESTAMP NULL, 
@@ -193,8 +197,9 @@ CREATE TABLE OrderDetail
      orderid   INT NOT NULL, 
      productid INT NOT NULL, 
      unitprice DECIMAL(10, 2) NOT NULL, 
-     qty       SMALLINT NOT NULL, 
-     discount  DECIMAL(10, 2) NOT NULL 
+     qty       SMALLINT NOT NULL,
+     discount  DECIMAL(10, 2) NOT NULL,
+     PRIMARY KEY ( orderid, productid )
   );
 
 
@@ -6749,3 +6754,12 @@ INSERT INTO EmployeeTerritory  VALUES (9,'55113');
 INSERT INTO EmployeeTerritory  VALUES (9,'55439');
 
 
+
+-- Resync SERIAL sequences after the explicit-id inserts above, so that
+-- INSERTs without an explicit id do not collide with seeded rows.
+SELECT setval(pg_get_serial_sequence('category',   'categoryid'), (SELECT max(categoryid) FROM category));
+SELECT setval(pg_get_serial_sequence('customer',   'custid'),     (SELECT max(custid)     FROM customer));
+SELECT setval(pg_get_serial_sequence('employee',   'empid'),      (SELECT max(empid)      FROM employee));
+SELECT setval(pg_get_serial_sequence('product',    'productid'),  (SELECT max(productid)  FROM product));
+SELECT setval(pg_get_serial_sequence('shipper',    'shipperid'),  (SELECT max(shipperid)  FROM shipper));
+SELECT setval(pg_get_serial_sequence('salesorder', 'orderid'),    (SELECT max(orderid)    FROM salesorder));
