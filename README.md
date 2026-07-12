@@ -197,7 +197,97 @@ The sample databases in this project are customized. Some table and column names
 ### ER Diagrams
 
 * The ER diagrams only contain primary and foreign keys.
-* The ER files were created with MySQL Workbench; you can open them with the same tool.
+* The Northwind diagrams were created with MySQL Workbench; you can open the `.mwb` files with the same tool. The Ecommerce diagram below is written in [Mermaid](https://mermaid.js.org/) and renders directly on GitHub, so it stays in sync with `pgsql/ecommerce.sql` / `mysql/ecommerce.sql` as plain text instead of a binary to regenerate.
+
+#### Ecommerce
+
+```mermaid
+erDiagram
+    users {
+        bigint user_id PK
+    }
+    addresses {
+        bigint address_id PK
+        bigint user_id FK
+    }
+    categories {
+        bigint category_id PK
+        bigint parent_category_id FK
+    }
+    products {
+        bigint product_id PK
+        bigint category_id FK
+    }
+    product_variants {
+        bigint variant_id PK
+        bigint product_id FK
+    }
+    product_images {
+        bigint image_id PK
+        bigint product_id FK
+    }
+    inventory {
+        bigint variant_id PK, FK
+    }
+    inventory_movements {
+        bigint movement_id PK
+        bigint variant_id FK
+        bigint order_id FK
+    }
+    carriers {
+        bigint carrier_id PK
+    }
+    carts {
+        bigint cart_id PK
+        bigint user_id FK
+    }
+    cart_items {
+        bigint cart_id PK, FK
+        bigint variant_id PK, FK
+    }
+    orders {
+        bigint order_id PK
+        bigint user_id FK
+    }
+    order_items {
+        bigint order_id PK, FK
+        bigint variant_id PK, FK
+    }
+    order_status_history {
+        bigint history_id PK
+        bigint order_id FK
+    }
+    payments {
+        bigint payment_id PK
+        bigint order_id FK
+    }
+    shipments {
+        bigint shipment_id PK
+        bigint order_id FK
+        bigint carrier_id FK
+    }
+
+    users ||--o{ addresses : has
+    users ||--o{ carts : owns
+    users ||--o{ orders : places
+    categories ||--o{ categories : "parent of"
+    categories ||--o{ products : contains
+    products ||--o{ product_variants : has
+    products ||--o{ product_images : has
+    product_variants ||--o| inventory : tracks
+    product_variants ||--o{ inventory_movements : logs
+    product_variants ||--o{ cart_items : "added to"
+    product_variants ||--o{ order_items : "sold in"
+    carts ||--o{ cart_items : contains
+    orders ||--o{ order_items : contains
+    orders ||--o{ order_status_history : has
+    orders ||--o{ payments : has
+    orders ||--o{ shipments : has
+    orders ||--o{ inventory_movements : adjusts
+    carriers ||--o{ shipments : fulfills
+```
+
+MongoDB uses a different shape: `addresses` are embedded inside `users`; `product_variants`, `product_images`, and stock are embedded inside `products`; and `order_items`, `order_status_history`, `payments`, and `shipments` are embedded inside `orders`. See `mongo/ecommerce/*.json` for the document layout.
 
 #### Northwind 
 
