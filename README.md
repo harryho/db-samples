@@ -194,7 +194,7 @@ The sample databases in this project are customized. Some table and column names
 * All photo sample data has been removed; a `photoPath` column has been added instead, for more flexible implementations.
 * NorthwindCore is designed for Entity Framework.
 
-### ER Diagram
+### ER Diagrams
 
 * The ER diagrams only contain primary and foreign keys.
 * The ER files were created with MySQL Workbench; you can open them with the same tool.
@@ -213,7 +213,7 @@ The sample databases in this project are customized. Some table and column names
 
 
 
-### Restore the database from SQL script
+### Restore a database from a SQL script
 
 > **Note:** For easier setup, consider using the [Docker method](#quick-start-with-docker-recommended) with the `./renew-mysql-infra.sh` or other renewal scripts.
 
