@@ -49,18 +49,17 @@ status history, payment and shipment inside orders):
 cd mongo/ecommerce && ./mongo_import.sh
 ```
 
-Then connect with `docker exec -it pgsql-infra psql -U postgres -d ecommerce` and try:
+Demo queries (top products by revenue, full-text search) are baked into
+`pgsql/verify-ecommerce.sql` and `mysql/verify-ecommerce.sql` — run whichever
+matches the dialect you loaded. For MongoDB, the equivalent revenue query is
+an aggregation over the embedded `items` array:
 
-```sql
--- top products by revenue
-SELECT p.name, sum(oi.line_total) AS revenue
-FROM order_items oi
-JOIN product_variants v USING (variant_id)
-JOIN products p USING (product_id)
-GROUP BY p.name ORDER BY revenue DESC LIMIT 10;
-
--- full-text product search
-SELECT name FROM products WHERE search @@ to_tsquery('english', 'product');
+```js
+db.orders.aggregate([
+  { $unwind: "$items" },
+  { $group: { _id: "$items.productName", revenue: { $sum: "$items.lineTotal" } } },
+  { $sort: { revenue: -1 } }, { $limit: 10 }
+])
 ```
 
 The Northwind instructions below remain fully supported.
@@ -371,33 +370,29 @@ systemctl start mongod
 
 ```
 
-* Create the `northwind` database and import the data
+* Create the `northwind` database and import the data (the same pattern applies to
+  `mongo/ecommerce/mongo_import.sh` for the ecommerce sample)
 
-```
-sh mongo_import.sh
+```bash
+cd mongo/data
+./mongo_import.sh
 
-echo "db.getCollectionNames()" > getColNames.js
+mongosh mongodb://localhost:27017/northwind --eval "db.getCollectionNames()"
 
-mongo mongodb://localhost/northwind < getColNames.js
-
-# You may see some output as follow:
-# .......
-# ......
-# MongoDB server version: x.x.x
+# Expected output:
 # [
-# 	"category",
-# 	"customer",
-# 	"employee",
-# 	"employeeTerritory",
-# 	"orderDetail",
-# 	"product",
-# 	"region",
-# 	"salesOrder",
-# 	"shipper",
-# 	"supplier",
-# 	"territory"
+# 	'category',
+# 	'customer',
+# 	'employee',
+# 	'employeeTerritory',
+# 	'orderDetail',
+# 	'product',
+# 	'region',
+# 	'salesOrder',
+# 	'shipper',
+# 	'supplier',
+# 	'territory'
 # ]
-
 ```
 
 #### SQLite
@@ -438,17 +433,19 @@ sqlcmd -S localhost -U sa -P YourStrong!Passw0rd -i mssql/northwind.sql
 
 ## Docker Compose Configuration
 
-The `docker-compose.yml` file includes optimized configurations for all three database servers:
+The `docker-compose.yml` file includes optimized configurations for all four database servers:
 
 - **MySQL**: Case-insensitive table names (`lower_case_table_names=1`), utf8mb4 collation
 - **PostgreSQL**: Alpine-based lightweight image, health checks enabled
 - **MS SQL Server**: Express edition, automatic initialization support
+- **MongoDB**: No authentication (local sample use only), health checks enabled
 
 To view container logs:
 ```bash
 docker-compose logs mysql
 docker-compose logs postgres
 docker-compose logs mssql
+docker-compose logs mongo
 ```
 
 ## Troubleshooting
