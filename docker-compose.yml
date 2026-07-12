@@ -73,7 +73,22 @@ services:
       start_period: 30s
     command: --default-authentication-plugin=mysql_native_password --lower-case-table-names=1
 
+  mongo:
+    image: mongo:7
+    container_name: mongo-infra
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
 volumes:
   mssql_data:
   postgres_data:
   mysql_data:
+  mongo_data:

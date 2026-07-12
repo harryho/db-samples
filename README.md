@@ -45,7 +45,8 @@ docker exec -i mysql-infra mysql -u root -p'YourStrong!Passw0rd' -D ecommerce < 
 status history, payment and shipment inside orders):
 
 ```bash
-cd mongo/ecommerce && sh mongo_import.sh    # needs mongoimport; MONGO_URI overrides the default localhost
+./renew-mongo-infra.sh          # Windows: ./renew-mongo-infra.ps1
+cd mongo/ecommerce && ./mongo_import.sh
 ```
 
 Then connect with `docker exec -it pgsql-infra psql -U postgres -d ecommerce` and try:
@@ -66,7 +67,7 @@ The Northwind instructions below remain fully supported.
 
 ## Quick Start with Docker (Recommended)
 
-The easiest way to get started is using Docker Compose, which provides pre-configured containers for MySQL, PostgreSQL, and MS SQL Server.
+The easiest way to get started is using Docker Compose, which provides pre-configured containers for MySQL, PostgreSQL, MS SQL Server, and MongoDB.
 
 ### Prerequisites
 
@@ -90,6 +91,9 @@ docker-compose up -d postgres
 
 # MS SQL Server only
 docker-compose up -d mssql
+
+# MongoDB only
+docker-compose up -d mongo
 ```
 
 ### Creating and Refreshing Databases (Recommended)
@@ -126,6 +130,14 @@ Use the provided renewal scripts to quickly create or refresh databases with sam
 - Username: `sa`
 - Password: `YourStrong!Passw0rd`
 
+**MongoDB:**
+```bash
+./renew-mongo-infra.sh
+```
+- Recreates the MongoDB container with an empty data volume
+- Port: 27017, no authentication (local sample use only)
+- Load data with `mongo/data/mongo_import.sh` (Northwind) or `mongo/ecommerce/mongo_import.sh` (ecommerce) — each prefers a local `mongoimport` and falls back to running it inside the container
+
 ### Connection Examples
 
 **MySQL:**
@@ -155,6 +167,15 @@ docker exec -it mssql-infra /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 
 sqlcmd -S localhost -U sa -P YourStrong!Passw0rd -d northwind
 ```
 
+**MongoDB:**
+```bash
+# Using Docker
+docker exec -it mongo-infra mongosh northwind
+
+# Using local mongosh client
+mongosh mongodb://localhost:27017/northwind
+```
+
 ### Database Features
 
 **MySQL Configuration:**
@@ -169,6 +190,10 @@ sqlcmd -S localhost -U sa -P YourStrong!Passw0rd -d northwind
 **MS SQL Server Configuration:**
 - Northwind database with singular table names
 - Compatible with SQL Server 2022
+
+**MongoDB Configuration:**
+- No authentication (local sample use only)
+- `mongo/data` holds flat Northwind collections; `mongo/ecommerce` holds the embedded-document ecommerce model
 
 ### Stopping and Removing Containers
 
@@ -443,7 +468,7 @@ docker-compose restart <service-name>
 **Database connection refused:**
 - Wait 10-30 seconds after starting containers for databases to initialize
 - Check if the container is healthy: `docker-compose ps`
-- Verify port is not already in use: `lsof -i :3306` (MySQL), `lsof -i :5432` (PostgreSQL), `lsof -i :1433` (MSSQL)
+- Verify port is not already in use: `lsof -i :3306` (MySQL), `lsof -i :5432` (PostgreSQL), `lsof -i :1433` (MSSQL), `lsof -i :27017` (MongoDB)
 
 **Reset everything:**
 ```bash
@@ -451,7 +476,7 @@ docker-compose restart <service-name>
 docker-compose down -v
 
 # Restart fresh
-./renew-mysql-infra.sh    # or renew-pgsql-infra.sh, or renew-mssql-infra.sh
+./renew-mysql-infra.sh    # or renew-pgsql-infra.sh, renew-mssql-infra.sh, or renew-mongo-infra.sh
 ```
 
 
@@ -460,7 +485,7 @@ docker-compose down -v
 
 * ~~Add script for MongoDB~~
 * ~~Add script for Sqlite~~
-* Add Mongo container
+* ~~Add Mongo container~~
 
 
 
